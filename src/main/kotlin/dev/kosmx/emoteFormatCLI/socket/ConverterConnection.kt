@@ -64,17 +64,23 @@ class ConverterConnection(private val socket: Socket): Runnable {
                 }
 
                 val emoteData = netData.emoteData
-                if ((emoteData ?: throw NullPointerException("Emote must not be null")).uuid == null) {
-                    emoteData.setFinalStatic(EmoteData::class.java.getDeclaredField("uuid"), UUID.randomUUID())
+                if ((emoteData ?: throw NullPointerException("Emote must not be null")).uuid == null || emoteData.isUUIDGenerated) {
+                    netData.emoteData = emoteData.let {
+                        val mutable = it.mutableCopy()
+                        mutable.uuid = UUID.randomUUID()
+                        mutable.build()
+                    }
                 }
 
                 val outputs = inputStream.read()
                 if (outputs < 0) throw BufferUnderflowException()
+                outputStream.write(outputs)
                 for (i in 0 until outputs) {
                     val type = inputStream.read()
                     val op = types[type] ?: throw IOException("Invalid type: $type")
                     val data: ByteBuffer = op.write(netData)
                     val byteData = INetworkInstance.safeGetBytesFromBuffer(data)
+                    outputStream.write(type)
                     outputStream.writeInt(byteData.size)
                     outputStream.write(byteData)
                 }
@@ -90,6 +96,7 @@ class ConverterConnection(private val socket: Socket): Runnable {
 
             } catch (t: Throwable) {
                 System.err.println(t)
+                t.printStackTrace(System.err)
             }
         }
     }

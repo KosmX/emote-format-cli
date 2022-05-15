@@ -1,6 +1,8 @@
 package dev.kosmx.emoteFormatCLI
 
+import dev.kosmx.emoteFormatCLI.executorImpl.Executor
 import dev.kosmx.emoteFormatCLI.socket.ConverterConnection
+import io.github.kosmx.emotes.executor.EmoteInstance
 import org.apache.commons.cli.*
 import java.net.ServerSocket
 import java.util.concurrent.Executors
@@ -25,6 +27,9 @@ fun main(args: Array<String>) {
             formatter.printHelp("Please specify a port!", options)
             exitProcess(2)
         }
+
+        EmoteInstance.instance = Executor()
+
         val port: Int = cmd.getOptionValue(portOption).toInt()
 
 

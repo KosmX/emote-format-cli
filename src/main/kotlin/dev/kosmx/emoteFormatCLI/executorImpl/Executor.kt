@@ -5,10 +5,16 @@ import io.github.kosmx.emotes.executor.Logger
 import io.github.kosmx.emotes.executor.dataTypes.IClientMethods
 import io.github.kosmx.emotes.executor.dataTypes.IDefaultTypes
 import io.github.kosmx.emotes.executor.dataTypes.IGetters
+import io.github.kosmx.emotes.server.config.Serializer
+import io.github.kosmx.emotes.server.serializer.EmoteSerializer
 import java.nio.file.Path
 import java.util.logging.Level
 
 class Executor: EmoteInstance() {
+
+    init {
+        Serializer()
+    }
     override fun getLogger(): Logger {
         return Logger() { _: Level, _: String -> /* nothing */ }
     }

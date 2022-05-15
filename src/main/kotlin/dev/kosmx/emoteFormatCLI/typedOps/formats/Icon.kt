@@ -13,7 +13,9 @@ class Icon: ITypedOp {
 
     override fun write(data: NetData): ByteBuffer {
         data.emoteData?: throw IOException("No emote")
-        data.emoteData!!.iconData?: throw IOException("No emote")
+        if (data.emoteData!!.iconData == null) {
+            return ByteBuffer.allocate(0) //no icon does not mean failure
+        }
         return data.emoteData!!.iconData!!.let { it.rewind(); it }
     }
 }
