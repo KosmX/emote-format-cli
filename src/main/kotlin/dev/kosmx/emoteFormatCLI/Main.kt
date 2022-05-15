@@ -20,8 +20,6 @@ fun main() {
     val input2 = Option("i2", "input2", true, "Secondary input, see modes")
 
 
-
-
     EmoteInstance.instance = Executor()
 
 
