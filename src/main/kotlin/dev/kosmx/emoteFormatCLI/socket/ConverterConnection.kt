@@ -6,15 +6,12 @@ import dev.kosmx.emoteFormatCLI.typedOps.formats.EmoteHeaderJSON
 import dev.kosmx.emoteFormatCLI.typedOps.formats.Icon
 import dev.kosmx.emoteFormatCLI.typedOps.formats.JsonFormat
 import io.github.kosmx.emotes.api.proxy.INetworkInstance
-import io.github.kosmx.emotes.common.emote.EmoteData
 import io.github.kosmx.emotes.common.network.objects.NetData
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 import java.net.Socket
 import java.nio.BufferUnderflowException
 import java.nio.ByteBuffer
@@ -102,12 +99,3 @@ class ConverterConnection(private val socket: Socket): Runnable {
     }
 }
 
-
-@Throws(Exception::class)
-fun EmoteData.setFinalStatic(field: Field, newValue: Any?) {
-    field.isAccessible = true
-    val modifiersField: Field = Field::class.java.getDeclaredField("modifiers")
-    modifiersField.isAccessible = true
-    modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
-    field.set(this, newValue)
-}

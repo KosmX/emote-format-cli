@@ -1,55 +1,42 @@
 package dev.kosmx.emoteFormatCLI.typedOps.util
 
 import com.google.gson.*
-import io.github.kosmx.emotes.common.emote.EmoteData
-import io.github.kosmx.emotes.common.emote.EmoteData.EmoteBuilder
-import io.github.kosmx.emotes.common.emote.EmoteFormat
-import io.github.kosmx.emotes.server.serializer.EmoteSerializer
+import dev.kosmx.playerAnim.core.data.gson.AnimationJson
 import java.lang.reflect.Type
 import java.util.*
 
-class HeaderJsonSerializer: JsonSerializer<EmoteData>, JsonDeserializer<EmoteData> {
+class HeaderJsonSerializer: JsonSerializer<AnimationHeader>, JsonDeserializer<AnimationHeader> {
 
     companion object {
         val INSTANCE: Gson
         init {
             val builder = GsonBuilder().setPrettyPrinting()
-            builder.registerTypeAdapter(EmoteData::class.java, HeaderJsonSerializer())
+            builder.registerTypeAdapter(AnimationHeader::class.java, HeaderJsonSerializer())
             INSTANCE = builder.create()
         }
     }
 
-    override fun serialize(emote: EmoteData?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
+    override fun serialize(emote: AnimationHeader?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
         if (emote == null) throw NullPointerException("emote can not be null")
         val node = JsonObject()
-        node.addProperty("version", if (emote.isEasingBefore) 2 else 1) //to make compatible emotes. I won't do it.
 
-        node.add("name", EmoteSerializer.asJson(emote.name))
-        node.add("description", EmoteSerializer.asJson(emote.description)) // :D
+        node.add("name", AnimationJson.asJson(emote.name))
+        node.add("description", AnimationJson.asJson(emote.description)) // :D
 
-        if (emote.author != null) {
-            node.add("author", EmoteSerializer.asJson(emote.author))
-        }
+        node.add("author", AnimationJson.asJson(emote.author))
 
-        node.add("uuid", EmoteSerializer.asJson(emote.uuid.toString()))
+        node.add("uuid", AnimationJson.asJson(emote.uuid.toString()))
+        node.addProperty("nsfw", emote.nsfw)
 
-        return node;
+        return node
     }
 
-    override fun deserialize(p: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): EmoteData {
+    override fun deserialize(p: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): AnimationHeader {
         val node: JsonObject = p!!.asJsonObject
 
-        var version = 1
-        if (node.has("version")) version = node["version"].asInt
-        //Text author = EmoteInstance.instance.getDefaults().emptyTex();
-        //Text author = EmoteInstance.instance.getDefaults().emptyTex();
-        val emote: EmoteBuilder = EmoteBuilder(EmoteFormat.JSON_EMOTECRAFT)
+        val emote = AnimationHeader()
 
 
-        //Text name = EmoteInstance.instance.getDefaults().fromJson(node.get("name"));
-
-
-        //Text name = EmoteInstance.instance.getDefaults().fromJson(node.get("name"));
         emote.name = node["name"].toString()
         if (node.has("author")) {
             emote.author = node["author"].toString()
@@ -64,7 +51,17 @@ class HeaderJsonSerializer: JsonSerializer<EmoteData>, JsonDeserializer<EmoteDat
             emote.description = node["description"].toString()
         }
 
-        return emote.build()
+        if (node.has("nsfw")) {
+            emote.nsfw = node["nsfw"].asBoolean
+        }
+
+        return emote
     }
 
 }
+
+data class AnimationHeader(var name: String = "",
+                      var description: String = "",
+                      var author: String = "",
+                      var nsfw: Boolean = false,
+                      var uuid: UUID? = null)

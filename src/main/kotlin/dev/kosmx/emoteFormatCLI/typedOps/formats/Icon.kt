@@ -8,14 +8,14 @@ import java.nio.ByteBuffer
 class Icon: ITypedOp {
     override fun read(data: NetData, input: ByteBuffer) {
         //input.rewind()
-        (data.emoteData?: throw IOException("Can not add icon to nothing")).iconData = input
+        (data.emoteData?: throw IOException("Can not add icon to nothing")).extraData["iconData"] = input
     }
 
     override fun write(data: NetData): ByteBuffer {
         data.emoteData?: throw IOException("No emote")
-        if (data.emoteData!!.iconData == null) {
+        if (data.emoteData!!.extraData["iconData"] == null) {
             return ByteBuffer.allocate(0) //no icon does not mean failure
         }
-        return data.emoteData!!.iconData!!.let { it.rewind(); it }
+        return (data.emoteData!!.extraData["iconData"] as ByteBuffer).let { it.rewind(); it }
     }
 }

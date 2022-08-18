@@ -1,13 +1,11 @@
 package dev.kosmx.emoteFormatCLI.typedOps.formats
 
-import dev.kosmx.emoteFormatCLI.socket.setFinalStatic
 import dev.kosmx.emoteFormatCLI.typedOps.ITypedOp
+import dev.kosmx.emoteFormatCLI.typedOps.util.AnimationHeader
 import dev.kosmx.emoteFormatCLI.typedOps.util.HeaderJsonSerializer
+import dev.kosmx.playerAnim.core.data.KeyframeAnimation
 import io.github.kosmx.emotes.api.proxy.INetworkInstance
-import io.github.kosmx.emotes.common.emote.EmoteData
 import io.github.kosmx.emotes.common.network.objects.NetData
-import java.io.BufferedOutputStream
-import java.io.BufferedWriter
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStreamReader
@@ -17,9 +15,9 @@ import java.nio.ByteBuffer
 class EmoteHeaderJSON: ITypedOp {
     override fun read(data: NetData, input: ByteBuffer) {
         val reader = InputStreamReader(ByteArrayInputStream(INetworkInstance.safeGetBytesFromBuffer(input)))
-        val emoteData = HeaderJsonSerializer.INSTANCE.fromJson(reader, EmoteData::class.java)
+        val emoteData = HeaderJsonSerializer.INSTANCE.fromJson(reader, AnimationHeader::class.java)
 
-        val originalData: EmoteData = data.emoteData?: throw NullPointerException("Can not set header if there is no data")
+        val originalData: KeyframeAnimation = data.emoteData?: throw NullPointerException("Can not set header if there is no data")
         val mutable = originalData.mutableCopy()
 
         /*
@@ -31,7 +29,8 @@ class EmoteHeaderJSON: ITypedOp {
         mutable.name = emoteData.name
         mutable.description = emoteData.description
         mutable.author = emoteData.author
-        mutable.uuid = emoteData.uuid
+        emoteData.uuid?.let { mutable.uuid = it }
+        mutable.nsfw = emoteData.nsfw
         data.emoteData = mutable.build()
 
     }

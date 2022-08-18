@@ -6,7 +6,6 @@ import io.github.kosmx.emotes.executor.dataTypes.IClientMethods
 import io.github.kosmx.emotes.executor.dataTypes.IDefaultTypes
 import io.github.kosmx.emotes.executor.dataTypes.IGetters
 import io.github.kosmx.emotes.server.config.Serializer
-import io.github.kosmx.emotes.server.serializer.EmoteSerializer
 import java.nio.file.Path
 import java.util.logging.Level
 
