@@ -1,7 +1,5 @@
 package dev.kosmx.emoteFormatCLI
 
-import dev.kosmx.emoteFormatCLI.executorImpl.Executor
-import io.github.kosmx.emotes.executor.EmoteInstance
 import org.apache.commons.cli.Option
 import org.apache.commons.cli.Options
 
@@ -19,8 +17,6 @@ fun main() {
     val arg = Option("a", "arg", true, "the input json if used -i *")
     val input2 = Option("i2", "input2", true, "Secondary input, see modes")
 
-
-    EmoteInstance.instance = Executor()
-
+    setup()
 
 }

@@ -1,8 +1,6 @@
 package dev.kosmx.emoteFormatCLI
 
-import dev.kosmx.emoteFormatCLI.executorImpl.Executor
 import dev.kosmx.emoteFormatCLI.socket.ConverterConnection
-import io.github.kosmx.emotes.executor.EmoteInstance
 import org.apache.commons.cli.*
 import java.net.ServerSocket
 import java.util.concurrent.Executors
@@ -28,7 +26,7 @@ fun main(args: Array<String>) {
             exitProcess(2)
         }
 
-        EmoteInstance.instance = Executor()
+        setup()
 
         val port: Int = cmd.getOptionValue(portOption).toInt()
 
@@ -42,8 +40,8 @@ fun main(args: Array<String>) {
         }
 
     } catch (e: ParseException) {
-        println(e.message);
-        formatter.printHelp("Invalid arguments", options);
+        println(e.message)
+        formatter.printHelp("Invalid arguments", options)
 
         exitProcess(1)
     }

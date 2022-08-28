@@ -67,9 +67,9 @@ data class AnimationHeader(var name: String = "",
                       var nsfw: Boolean = false,
                       var uuid: UUID? = null) {
     constructor(emoteData: KeyframeAnimation) : this(
-        name = emoteData.extraData["name"] as String,
-        author = emoteData.extraData["author"] as String,
-        description = emoteData.extraData["description"] as String,
+        name = (emoteData.extraData["name"] as String?)?: "",
+        author = (emoteData.extraData["author"] as String?)?: "",
+        description = (emoteData.extraData["description"] as String?)?: "",
         nsfw = emoteData.nsfw,
         uuid = emoteData.uuid
     )
