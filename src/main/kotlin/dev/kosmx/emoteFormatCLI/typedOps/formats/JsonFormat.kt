@@ -20,9 +20,12 @@ class JsonFormat: ITypedOp {
     }
 
     override fun write(data: NetData): ByteBuffer {
-        val out = ByteArrayOutputStream()
-        AnimationSerializing.writeAnimation(data.emoteData, OutputStreamWriter(out))
-        out.close()
+        val out = ByteArrayOutputStream().use {out ->
+            OutputStreamWriter(out).use {
+                AnimationSerializing.writeAnimation(data.emoteData, it)
+            }
+            out
+        }
         return ByteBuffer.wrap(out.toByteArray())
     }
 

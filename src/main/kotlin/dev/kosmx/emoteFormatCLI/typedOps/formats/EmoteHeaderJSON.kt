@@ -38,7 +38,8 @@ class EmoteHeaderJSON: ITypedOp {
     override fun write(data: NetData): ByteBuffer {
         val out = ByteArrayOutputStream()
         val writer = OutputStreamWriter(out)
-        HeaderJsonSerializer.INSTANCE.toJson(data.emoteData, writer)
+        val emoteData = data.emoteData?: throw NullPointerException("Can not set header if there is no data")
+        HeaderJsonSerializer.INSTANCE.toJson(AnimationHeader(emoteData), writer)
         writer.close()
         out.close()
         return ByteBuffer.wrap(out.toByteArray())

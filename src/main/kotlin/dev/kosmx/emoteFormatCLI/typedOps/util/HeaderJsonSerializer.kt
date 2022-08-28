@@ -1,6 +1,7 @@
 package dev.kosmx.emoteFormatCLI.typedOps.util
 
 import com.google.gson.*
+import dev.kosmx.playerAnim.core.data.KeyframeAnimation
 import dev.kosmx.playerAnim.core.data.gson.AnimationJson
 import java.lang.reflect.Type
 import java.util.*
@@ -64,4 +65,12 @@ data class AnimationHeader(var name: String = "",
                       var description: String = "",
                       var author: String = "",
                       var nsfw: Boolean = false,
-                      var uuid: UUID? = null)
+                      var uuid: UUID? = null) {
+    constructor(emoteData: KeyframeAnimation) : this(
+        name = emoteData.extraData["name"] as String,
+        author = emoteData.extraData["author"] as String,
+        description = emoteData.extraData["description"] as String,
+        nsfw = emoteData.nsfw,
+        uuid = emoteData.uuid
+    )
+}
